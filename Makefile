@@ -166,13 +166,19 @@ distclean: distclean-py distclean-js
 ## MAINTAINERS
 
 bump:
-	bumpversion patch
+	bumpversion patch && \
+	echo -n "Now on version: " && \
+	git describe --tags
 
 bump-minor:
-	bumpversion minor
+	bumpversion minor && \
+	echo -n "Now on version: " && \
+	git describe --tags
 
 bump-major:
-	bumpversion major
+	bumpversion major && \
+	echo -n "Now on version: " && \
+	git describe --tags
 
 release:
 	python setup.py register sdist bdist_wheel upload
