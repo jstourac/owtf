@@ -26,8 +26,10 @@ RUN apt-get -y install  xvfb xserver-xephyr libxml2-dev libxslt-dev libssl-dev z
                         libyaml-dev
 
 # Set locale
-RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
-  locale-gen
+#RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+#  locale-gen
+RUN apt-get clean && apt-get update && apt-get install -y locales
+RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
@@ -47,13 +49,15 @@ RUN pip install virtualenv && virtualenv ~/.venv/owtf && . ~/.venv/owtf/bin/acti
 # Create a dedicated OWTF directory to copy source to and run from.
 RUN cd / && /bin/mkdir -p owtf
 ADD . /owtf
+# manually download from https://github.com/vishnubob/wait-for-it
 ADD docker/wait-for-it.sh /usr/bin/wait-for-it.sh
 RUN chmod +x /usr/bin/wait-for-it.sh
 
 # Copy the configuration file intended for the Docker environment
-RUN cp -f /owtf/docker/default.settings.py /owtf/owtf/settings.py
+#RUN cp -f /owtf/docker/default.settings.py /owtf/owtf/settings.py
 
 # Install OWTF using the recommended method (setup.py)
+RUN pip install typing pyyaml tornado
 RUN cd /owtf &&\
   python setup.py develop
 
